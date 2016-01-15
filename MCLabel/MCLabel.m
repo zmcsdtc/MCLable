@@ -109,27 +109,38 @@
     return label;
 }
 #pragma mark-长按弹框复制文字内容
-- (void) coayLabelText{
+- (BOOL)canBecomeFirstResponder{
+    return YES;
+}
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    return (action == @selector(copyThisLabelText:));
+}
+//添加长手势
+- (void) addLongPressGestureRecognize{
     UILongPressGestureRecognizer*longPress=[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(copyText:)];
     [self addGestureRecognizer:longPress];
 }
-//复制文字内容
+//长手势方法-menucontroller
 - (void) copyText:(UILongPressGestureRecognizer*)longGes{
     if (longGes.state==UIGestureRecognizerStateBegan) {
         if (_longTouchCopy==YES) {
-            UIPasteboard*pad=[UIPasteboard generalPasteboard];
-            [pad setString:self.text];
-            if (pad==nil) {
-                NSLog(@"无内容或者复制失败");
-            }
-            else{
-                NSLog(@"复制成功");
-            }
+            [self becomeFirstResponder];
+            UIMenuController*popMenu=[UIMenuController sharedMenuController];
+            UIMenuItem *copyLink = [[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyThisLabelText:)];
+            [popMenu setMenuItems:[NSArray arrayWithObjects:copyLink, nil]];
+            [popMenu setTargetRect:self.frame inView:self.superview];
+            [popMenu setMenuVisible:YES animated:YES];
+            [popMenu setArrowDirection:UIMenuControllerArrowDown];
         }
     }
 }
+//复制内容
+- (void)copyThisLabelText:(id)sender{
+    UIPasteboard*pas=[UIPasteboard generalPasteboard];
+    pas.string=self.text;
+}
 - (void) setLongTouchCopy:(BOOL)longTouchCopy{
     _longTouchCopy=longTouchCopy;
-    [self coayLabelText];
+    [self addLongPressGestureRecognize];
 }
 @end

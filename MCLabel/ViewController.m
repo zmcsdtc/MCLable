@@ -17,7 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    MCLabel*label=[MCLabel createLabelByString:@"asdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdasdasdasdasdasd" andByFont:18 andByWidth:100 atOrigin:CGPointMake(0, 20) textAlignment:NSTextAlignmentLeft];
+    MCLabel*label=[MCLabel createLabelByString:@"asdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdasdasdasdasdasd" andByFont:18 andByWidth:100 atOrigin:CGPointMake(0, 420) textAlignment:NSTextAlignmentLeft];
     [self.view addSubview:label];
     label.longTouchCopy=YES;
     label.backgroundColor=[UIColor redColor];
