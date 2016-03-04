@@ -9,7 +9,9 @@
 #import "ViewController.h"
 #import "MCLabel.h"
 @interface ViewController ()
-
+{
+    MCLabel*_label;
+}
 @end
 
 @implementation ViewController
@@ -17,21 +19,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    MCLabel*label=[MCLabel createLabelByString:@"asdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdsdasdasdasdasdasdasdasd" andByFont:18 andByWidth:100 atOrigin:CGPointMake(0, 420) textAlignment:NSTextAlignmentLeft];
+    MCLabel*label=[MCLabel createLabelByString:@"啊大大啊大s43123沙发阿达" andByFont:45 andByWidth:200 atOrigin:CGPointMake(100, 120) textAlignment:NSTextAlignmentLeft];
     [self.view addSubview:label];
     label.longTouchCopy=YES;
     label.backgroundColor=[UIColor redColor];
     
-    MCLabel*label1=[MCLabel createLabelByString:@"撒大声地阿达啊" andByFont:18 andByWidth:100 atOrigin:CGPointMake(150, 20) textAlignment:NSTextAlignmentLeft];
+    MCLabel*label1=[MCLabel createLabelByString:@"撒声撒大声撒大声" andByFont:18 andByHeight:40 atOrigin:CGPointMake(10, 20) textAlignment:NSTextAlignmentLeft];
     [self.view addSubview:label1];
     label1.longTouchCopy=YES;
     label1.backgroundColor=[UIColor redColor];
-    
-    
-    UITextView*text=[[UITextView alloc] initWithFrame:CGRectMake(0, 200, 200,200)];
-    text.backgroundColor=[UIColor cyanColor];
-    [self.view addSubview:text];
-    
+    _label=label;
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    _label.text=@"123";
 }
 
 - (void)didReceiveMemoryWarning {

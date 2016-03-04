@@ -15,23 +15,39 @@ typedef enum
     /**
      *  定格对齐
      */
-    VerticalAlignmentTop,
+    MCVerticalAlignmentTop,
     /**
      *  底部对齐
      */
-    VerticalAlignmentButtom,
+    MCVerticalAlignmentButtom,
     /**
      *  居中对齐
      */
-    VerticalAlignmentMiddle
+    MCVerticalAlignmentMiddle
     
-}VerticalAlignment;
+}MCVerticalAlignment;
+typedef enum {
+    /**
+     *  宽度不变
+     */
+    MCLabelWidthNotChange=10,
+    /**
+     *  高度不变
+     */
+    MCLabelHeightNotChange=11
+    
+}MCLabelSizeType;
 
 @interface MCLabel : UILabel
 /**
  *  文字布局
  */
-@property(assign,nonatomic)VerticalAlignment verticalAlignment;
+@property(assign,nonatomic)MCVerticalAlignment mcVerticalAlignment;
+/**
+ *  宽固定还是高固定
+ */
+@property(assign,nonatomic)MCLabelSizeType mcLabelSizeType;
+
 /**
  *  长按是否复制,默认状态否
  */
@@ -49,5 +65,6 @@ typedef enum
  *  根据文字内容和字体以及高度创建UILabel-atOrigin:起始坐标
  */
 +(MCLabel*)createLabelByString:(NSString*)text andByFont:(NSInteger)fontNumber andByHeight:(CGFloat)height atOrigin:(CGPoint)point textAlignment:(NSTextAlignment)textAlignment;
+
 
 @end

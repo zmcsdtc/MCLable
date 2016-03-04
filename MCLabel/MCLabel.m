@@ -22,15 +22,15 @@
  */
 - (void) labelDefault{
     //默认居中对齐-和系统一致
-    self.verticalAlignment=VerticalAlignmentMiddle;
+    self.mcVerticalAlignment=MCVerticalAlignmentMiddle;
     //默认关闭长按复制
     self.longTouchCopy=NO;
     //开启交互
     self.userInteractionEnabled=YES;
 }
 #pragma mark-改变文字布局
-- (void) setVerticalAlignment:(VerticalAlignment)verticalAlignment{
-    _verticalAlignment=verticalAlignment;
+- (void) setMcVerticalAlignment:(MCVerticalAlignment)mcVerticalAlignment{
+    _mcVerticalAlignment=mcVerticalAlignment;
     [self setNeedsDisplay];
 }
 /**
@@ -38,18 +38,18 @@
  */
 -(CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines{
     CGRect textRect=[super textRectForBounds:bounds limitedToNumberOfLines:numberOfLines];
-    switch (self.verticalAlignment) {
-        case VerticalAlignmentTop:
+    switch (self.mcVerticalAlignment) {
+        case MCVerticalAlignmentTop:
         {
             textRect.origin.y=bounds.origin.y;
         }
             break;
-        case VerticalAlignmentButtom:
+        case MCVerticalAlignmentButtom:
         {
             textRect.origin.y=bounds.origin.y+bounds.size.height-textRect.size.height;
         }
             break;
-        case VerticalAlignmentMiddle:
+        case MCVerticalAlignmentMiddle:
         default:{
             textRect.origin.y = bounds.origin.y+(bounds.size.height - textRect.size.height) / 2.0;
         }
@@ -87,27 +87,47 @@
     
 }
 
-+(MCLabel*)createLabelByString:(NSString*)text andByFont:(NSInteger)fontNumber andByWidth:(CGFloat)width atOrigin:(CGPoint)point textAlignment:(NSTextAlignment)textAlignment{
-    NSDictionary *textfont = @{NSFontAttributeName:[UIFont systemFontOfSize:fontNumber]};
-    CGFloat textHeight=[text boundingRectWithSize:CGSizeMake( width,CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:textfont context:nil].size.height;
-    MCLabel*label=[[MCLabel alloc]initWithFrame:CGRectMake(point.x, point.y, width, textHeight)];
-    label.text=text;
-    label.font=[UIFont systemFontOfSize:fontNumber];
++(MCLabel*)createLabelByString:(NSString*)text andByFont:(NSInteger)fontNumber andByHeight:(CGFloat)height atOrigin:(CGPoint)point textAlignment:(NSTextAlignment)textAlignment{
+    MCLabel*label=[[MCLabel alloc]initWithFrame:CGRectMake(point.x, point.y, 1, height)];
+    label.mcLabelSizeType=MCLabelHeightNotChange;
+    //要先设置字体再赋值
+    label.font=[UIFont systemFontOfSize:fontNumber];;
     label.numberOfLines=0;
     label.textAlignment=textAlignment;
+    label.text=text;
+    
     return label;
+}
++(MCLabel*)createLabelByString:(NSString*)text andByFont:(NSInteger)fontNumber andByWidth:(CGFloat)width atOrigin:(CGPoint)point textAlignment:(NSTextAlignment)textAlignment{
+    MCLabel*label=[[MCLabel alloc]initWithFrame:CGRectMake(point.x, point.y, width, 1)];
+    label.mcLabelSizeType=MCLabelWidthNotChange;
+    //要先设置字体再赋值
+    label.font=[UIFont systemFontOfSize:fontNumber];;
+    label.numberOfLines=0;
+    label.textAlignment=textAlignment;
+    label.text=text;
+    return label;
+}
+#pragma mark-重写text
+- (void) setText:(NSString *)text{
+    [super setText:text];
+    
+    if (self.mcLabelSizeType==MCLabelHeightNotChange) {
+        CGFloat textWidth=[text boundingRectWithSize:CGSizeMake( CGFLOAT_MAX,self.bounds.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.font} context:nil].size.width;
+        CGRect frame=self.frame;
+        frame.size.width=textWidth;
+        self.frame=frame;
+    }
+    if (self.mcLabelSizeType==MCLabelWidthNotChange) {
+        CGFloat textHeight=[text boundingRectWithSize:CGSizeMake(self.bounds.size.width,CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.font} context:nil].size.height;
+        CGRect frame=self.frame;
+        frame.size.height=textHeight;
+        self.frame=frame;
+    }
+    
+
 }
 
-+(MCLabel*)createLabelByString:(NSString*)text andByFont:(NSInteger)fontNumber andByHeight:(CGFloat)height atOrigin:(CGPoint)point textAlignment:(NSTextAlignment)textAlignment{
-    NSDictionary *textfont = @{NSFontAttributeName:[UIFont systemFontOfSize:fontNumber]};
-    CGFloat textWidth=[text boundingRectWithSize:CGSizeMake( CGFLOAT_MAX,height) options:NSStringDrawingUsesLineFragmentOrigin attributes:textfont context:nil].size.width;
-    MCLabel*label=[[MCLabel alloc]initWithFrame:CGRectMake(point.x, point.y, textWidth, height)];
-    label.text=text;
-    label.font=[UIFont systemFontOfSize:fontNumber];
-    label.numberOfLines=0;
-    label.textAlignment=textAlignment;
-    return label;
-}
 #pragma mark-长按弹框复制文字内容
 - (BOOL)canBecomeFirstResponder{
     return YES;
@@ -143,4 +163,7 @@
     _longTouchCopy=longTouchCopy;
     [self addLongPressGestureRecognize];
 }
+
+#pragma mark-调整大小的方法
+
 @end
